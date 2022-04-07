@@ -199,19 +199,19 @@ class _HomePageState extends State<HomePage> {
                         _goToSettings(context);
                       },
                     ),
-                    ListTile(
-                      title: Text('PARCIAIS'),
-                    ),
+                    // ListTile(
+                    //   title: Text('PARCIAIS'),
+                    // ),
                     ListTile(
                       leading: Icon(Icons.view_list),
                       title: Text('Meus Campeonatos'),
                       onTap: () {},
                     ),
-                    ListTile(
-                      leading: Icon(Icons.group),
-                      title: Text('Grupos'),
-                      onTap: () {},
-                    ),
+                    // ListTile(
+                    //   leading: Icon(Icons.group),
+                    //   title: Text('Grupos'),
+                    //   onTap: () {},
+                    // ),
                     ExpansionTile(
                       leading: Icon(Icons.casino),
                       title: Text('Cartola'),
@@ -229,14 +229,14 @@ class _HomePageState extends State<HomePage> {
                           leading: Icon(Icons.panorama_fish_eye),
                           title: Text('Times'),
                         ),
-                        ListTile(
-                          leading: Icon(Icons.panorama_fish_eye),
-                          title: Text('Jogadores'),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.panorama_fish_eye),
-                          title: Text('Jogos'),
-                        )
+                        // ListTile(
+                        //   leading: Icon(Icons.panorama_fish_eye),
+                        //   title: Text('Jogadores'),
+                        // ),
+                        // ListTile(
+                        //   leading: Icon(Icons.panorama_fish_eye),
+                        //   title: Text('Jogos'),
+                        // )
                       ],
                     ),
                     ListTile(
@@ -261,28 +261,28 @@ class _HomePageState extends State<HomePage> {
                         )
                       ],
                     ),
-                    ExpansionTile(
-                      leading: Icon(Icons.print),
-                      title: Text('Participações'),
-                      trailing: Icon(
-                        _expandedMenuParticipation
-                            ? Icons.arrow_drop_down
-                            : Icons.arrow_forward_ios,
-                        size: 10,
-                      ),
-                      onExpansionChanged: (bool expanded) {
-                        setState(() => _expandedMenuParticipation = expanded);
-                      },
-                      children: <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.panorama_fish_eye),
-                          title: Text('Resultados'),
-                        ),
-                        ListTile(
-                            leading: Icon(Icons.panorama_fish_eye),
-                            title: Text('Histórico de Ganhos'))
-                      ],
-                    ),
+                    // ExpansionTile(
+                    //   leading: Icon(Icons.print),
+                    //   title: Text('Participações'),
+                    //   trailing: Icon(
+                    //     _expandedMenuParticipation
+                    //         ? Icons.arrow_drop_down
+                    //         : Icons.arrow_forward_ios,
+                    //     size: 10,
+                    //   ),
+                    //   onExpansionChanged: (bool expanded) {
+                    //     setState(() => _expandedMenuParticipation = expanded);
+                    //   },
+                    //   children: <Widget>[
+                    //     ListTile(
+                    //       leading: Icon(Icons.panorama_fish_eye),
+                    //       title: Text('Resultados'),
+                    //     ),
+                    //     ListTile(
+                    //         leading: Icon(Icons.panorama_fish_eye),
+                    //         title: Text('Histórico de Ganhos'))
+                    //   ],
+                    // ),
                     ListTile(
                       leading: Icon(Icons.exit_to_app),
                       title: Text('Sair'),
