@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trivelaapp/component/shop_list.dart';
 import 'package:trivelaapp/controller/home_page_controller.dart';
+import 'package:trivelaapp/page/deposit_page.dart';
 import 'package:trivelaapp/page/login_page.dart';
 import 'package:trivelaapp/page/settings_page.dart';
 import 'package:trivelaapp/response/saldo_response.dart';
@@ -177,6 +178,13 @@ class _HomePageState extends State<HomePage> {
                           children: <Widget>[
                             ListTile(
                               title: Center(child: Text('Comprar')),
+                              onTap: () {
+                                _selectComponent(1, context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => HomePage(
+                                          index: 2,
+                                        )));
+                              },
                             ),
                             ListTile(
                               title: Center(
@@ -357,6 +365,10 @@ class _HomePageState extends State<HomePage> {
     switch (index) {
       case 1:
         return new ShopList();
+        break;
+
+      case 2:
+        return new DepositPage();
         break;
     }
   }
