@@ -11,4 +11,14 @@ class HomePageController {
 
     return responseSaldo;
   }
+
+  Future<SaldoResponse> getSaldoBonus() async {
+    final HomeRepository repository = HomeRepository();
+    SaldoResponse responseSaldo;
+    try {
+      responseSaldo = await repository.getSaldoReal();
+    } catch (e) {}
+
+    return responseSaldo;
+  }
 }

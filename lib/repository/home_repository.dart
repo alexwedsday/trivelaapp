@@ -28,6 +28,27 @@ class HomeRepository {
     return saldoResponse;
   }
 
+  Future<SaldoResponse> getSaldoBonus() async {
+    final String URL = 'https://app.trivelaligas.com/api/auth/saldo/bonus';
+    final token = await getToken();
+    SaldoResponse saldoResponse;
+    this._headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${token}'
+    };
+    try {
+      http.Response response = await http.post(URL, headers: _headers);
+      print('body: ${response.body} \n status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        saldoResponse = SaldoResponse.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      print(e);
+    }
+    return saldoResponse;
+  }
+
   Future<String> getToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token');

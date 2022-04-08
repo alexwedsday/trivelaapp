@@ -25,6 +25,9 @@ class _HomePageState extends State<HomePage> {
   bool _expandedMenuParticipation = false;
   HomePageController _controller;
   String _balance;
+  String _balanceBonus;
+  String _balanceReal;
+
   int selected;
 
   @override
@@ -33,6 +36,8 @@ class _HomePageState extends State<HomePage> {
     _controller = HomePageController();
     setState(() {
       _balance = '0,00';
+      _balanceReal = '0,00';
+      _balanceBonus = '0,00';
       selected = widget.index;
     });
     _saldo();
@@ -314,11 +319,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _saldo() async {
-    SaldoResponse saldoResponse = await _controller.getSaldo();
+    SaldoResponse saldoReal = await _controller.getSaldo();
+    SaldoResponse saldoBonus = await _controller.getSaldoBonus();
 
-    if (saldoResponse != null && !saldoResponse.error) {
+    if (saldoReal != null && !saldoReal.error) {
+      final double saldo = _somaSaldo(saldoReal?.saldo, saldoBonus?.saldo);
       setState(() {
-        _balance = formatSaldo(saldoResponse.saldo);
+        _balanceBonus = formatSaldo(saldoBonus?.saldo);
+        _balanceReal = formatSaldo(saldoReal?.saldo);
+        _balance = formatSaldo(saldo);
       });
     }
   }
@@ -331,6 +340,14 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {}
 
     return str;
+  }
+
+  double _somaSaldo(double real, double bonus) {
+    double retorno = 0.0;
+
+    if (real != null && bonus != null) retorno = real + bonus;
+
+    return retorno;
   }
 
   StatefulWidget _selectComponent(int index, BuildContext context) {
