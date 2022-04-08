@@ -43,7 +43,11 @@ class _ShopListState extends State<ShopList> {
                             elevation: 4,
                             child: Column(children: <Widget>[
                               campeonato == null
-                                  ? ListTile()
+                                  ? ListTile(
+                                      leading: Icon(Icons.refresh_outlined),
+                                      title: Text('Clique para recarregar'),
+                                      onTap: () => {_populate()},
+                                    )
                                   : campeonato != null
                                       ? Image.memory(
                                           decodeBase64(campeonato?.imagem),

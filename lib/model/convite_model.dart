@@ -1,10 +1,10 @@
 class ConviteModel {
   int id;
   String processado;
-  String users_id;
-  String profiles_id;
-  String usuario_convite;
-  String campeonato_id;
+  int users_id;
+  int profiles_id;
+  int usuario_convite;
+  int campeonato_id;
 
   ConviteModel({
     this.id,

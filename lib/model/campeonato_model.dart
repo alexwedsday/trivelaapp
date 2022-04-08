@@ -16,15 +16,15 @@ class CampeonatoModel {
   String minimo;
   String privado;
   String status;
-  Null situacao;
+  dynamic situacao;
   String encerramentoinsc;
-  Null regras;
-  Null encerrado;
-  Null rodadasId;
-  Null ngrupos;
-  Null faseatual;
-  Null rodadaini;
-  Null rodadafim;
+  String regras;
+  String encerrado;
+  int rodadasId;
+  String ngrupos;
+  String faseatual;
+  String rodadaini;
+  String rodadafim;
   List<ConviteModel> convites;
   List<ParticipanteModel> participantes;
   String slug;
@@ -82,7 +82,7 @@ class CampeonatoModel {
     rodadaini = json['rodadaini'];
     rodadafim = json['rodadafim'];
     if (json['convites'] != null) {
-      convites = <Null>[];
+      convites = <ConviteModel>[];
       json['convites'].forEach((v) {
         convites.add(new ConviteModel.fromJson(v));
       });

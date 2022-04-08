@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trivelaapp/component/dashboard.dart';
 import 'package:trivelaapp/component/shop_list.dart';
 import 'package:trivelaapp/controller/home_page_controller.dart';
 import 'package:trivelaapp/page/deposit_page.dart';
@@ -363,12 +364,20 @@ class _HomePageState extends State<HomePage> {
       selected = index;
     });
     switch (index) {
+      case 0:
+        return Dashboard();
+        break;
+
       case 1:
         return new ShopList();
         break;
 
       case 2:
         return new DepositPage();
+        break;
+
+      default:
+        return Dashboard();
         break;
     }
   }

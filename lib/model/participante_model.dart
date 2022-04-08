@@ -7,6 +7,7 @@ class ParticipanteModel {
   int campeonatosId;
   String createdAt;
   String updatedAt;
+  int pontosrodada;
   ProfileModel profile;
 
   ParticipanteModel(
@@ -16,6 +17,7 @@ class ParticipanteModel {
       this.campeonatosId,
       this.createdAt,
       this.updatedAt,
+      this.pontosrodada,
       this.profile});
 
   ParticipanteModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class ParticipanteModel {
     campeonatosId = json['campeonatos_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    pontosrodada = json['pontosrodada'];
     profile = json['profile'] != null
         ? new ProfileModel.fromJson(json['profile'])
         : null;
