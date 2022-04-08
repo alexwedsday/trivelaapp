@@ -16,7 +16,7 @@ class HomePageController {
     final HomeRepository repository = HomeRepository();
     SaldoResponse responseSaldo;
     try {
-      responseSaldo = await repository.getSaldoReal();
+      responseSaldo = await repository.getSaldoBonus();
     } catch (e) {}
 
     return responseSaldo;
