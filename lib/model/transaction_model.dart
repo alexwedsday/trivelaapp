@@ -2,7 +2,7 @@ class TransactionModel {
   String valor;
   String site;
 
-  TransactionModel({this.valor, this.site});
+  TransactionModel();
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = Map<String, dynamic>();

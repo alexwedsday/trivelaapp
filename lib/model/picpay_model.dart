@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:trivelaapp/model/picpay_transaction.dart';
+
 class PicpayModel {
   String transacao;
   String valor;
   String status;
   String site;
-  String retorno;
+  PicpayTransaction retorno;
   String tipo;
   int usersId;
   String destino;
@@ -31,7 +35,12 @@ class PicpayModel {
     valor = json['valor'];
     status = json['status'];
     site = json['site'];
-    retorno = json['retorno'];
+    if (json['retorno'] != null) {
+      retorno = PicpayTransaction.fromJson(jsonDecode(json['retorno']));
+    } else {
+      retorno = null;
+    }
+
     tipo = json['tipo'];
     usersId = json['users_id'];
     destino = json['destino'];

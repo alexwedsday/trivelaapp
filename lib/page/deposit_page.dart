@@ -1,10 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:trivelaapp/controller/payment_controller.dart';
+import 'package:trivelaapp/page/qrcode_page.dart';
+import 'package:trivelaapp/response/payment_response.dart';
 import 'package:trivelaapp/shared/moeda_formatter.dart';
 import 'package:trivelaapp/shared/trivela_assets.dart';
+import 'package:validators/validators.dart' as validator;
 
 class DepositPage extends StatefulWidget {
   @override
@@ -13,10 +15,17 @@ class DepositPage extends StatefulWidget {
 
 class _DepositPageState extends State<DepositPage> {
   TextEditingController _textEditingController = TextEditingController();
+  PaymentController _controller;
   bool _isLoadingPic = false;
   bool _isLoadingPix = false;
   bool _isDisablePic = false;
   bool _isDisablePix = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PaymentController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +65,7 @@ class _DepositPageState extends State<DepositPage> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 30),
                             child: Form(
+                              key: _controller.formKey,
                               child: Column(
                                 children: <Widget>[
                                   TextFormField(
@@ -93,6 +103,9 @@ class _DepositPageState extends State<DepositPage> {
                                               color: Color.fromRGBO(
                                                   242, 210, 110, 1.0))),
                                     ),
+                                    validator: (value) => _strValid(value),
+                                    onSaved: (value) =>
+                                        _controller.transactionValor(value),
                                   ),
                                   const SizedBox(height: 32),
                                   _isLoadingPic
@@ -165,31 +178,91 @@ class _DepositPageState extends State<DepositPage> {
     );
   }
 
-  void _transactionPic() {
+  String _strValid(String value) {
+    String str = '';
+
+    if (validator.isNull(value))
+      str = 'É necessário digitar um valor';
+    else if (validator.isLength(str, 4)) str = 'Entre com um valor válido';
+
+    return str.isEmpty ? null : str;
+  }
+
+  void _transactionPic() async {
     setState(() {
       _isDisablePix = true;
       _isLoadingPic = true;
     });
 
-    Timer timer = new Timer(new Duration(seconds: 5), () {
-      setState(() {
-        _isLoadingPic = false;
-        _isDisablePix = false;
-      });
+    PaymentResponse response = await _controller.picpay();
+
+    if (response != null && response.error) {
+      _showDialog('Atenção', response.message);
+    } else if (response != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => QrcodePage(
+                    picpayModel: response?.item,
+                  )));
+    }
+    setState(() {
+      _isLoadingPic = false;
+      _isDisablePix = false;
     });
   }
 
-  void _transactionPix() {
+  void _transactionPix() async {
     setState(() {
       _isDisablePic = true;
       _isLoadingPix = true;
     });
+    PaymentResponse response = await _controller.payme();
 
-    Timer timer = new Timer(new Duration(seconds: 5), () {
-      setState(() {
-        _isLoadingPix = false;
-        _isDisablePic = false;
-      });
+    if (response != null && response.error) {
+      _showDialog('Ops!', response.message);
+    } else if (response != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => QrcodePage(
+                    picpayModel: response?.item,
+                  )));
+    }
+
+    setState(() {
+      _isLoadingPix = false;
+      _isDisablePic = false;
     });
+  }
+
+  _showDialog(String title, String message) {
+    setState(() {
+      _isLoadingPix = false;
+      _isLoadingPic = false;
+      _isDisablePic = false;
+      _isDisablePix = false;
+    });
+
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: const Text('Fechar'))
+            ],
+          );
+        });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
