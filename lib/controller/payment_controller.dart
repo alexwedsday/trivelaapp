@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:trivelaapp/model/transaction_model.dart';
 import 'package:trivelaapp/repository/payment_repository.dart';
-import 'package:trivelaapp/response/payment_response.dart';
+import 'package:trivelaapp/response/payme/pay_payment_response.dart';
+import 'package:trivelaapp/response/picpay/pic_payment_response.dart';
 
 class PaymentController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   PaymentRepository _repository = PaymentRepository();
   TransactionModel transactionModel = TransactionModel();
 
-  Future<PaymentResponse> picpay() async {
-    PaymentResponse paymentResponse;
+  Future<PicPaymentResponse> picpay() async {
+    PicPaymentResponse paymentResponse;
 
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
@@ -20,19 +21,23 @@ class PaymentController {
     return paymentResponse;
   }
 
-  Future<PaymentResponse> payme() async {
-    PaymentResponse paymentResponse;
+  Future<PayPaymentResponse> payme() async {
+    PayPaymentResponse paymentResponse;
 
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      transactionModel.site = 'payme';
-      paymentResponse = await _repository.picpay(transactionModel);
+      transactionModel.site = 'paymee';
+      paymentResponse = await _repository.payme(transactionModel);
     }
     return paymentResponse;
   }
 
-  Future<PaymentResponse> check(String transactionId) async {
-    return await _repository.check(transactionId);
+  Future<PicPaymentResponse> checkPic(String transactionId) async {
+    return await _repository.checkPic(transactionId);
+  }
+
+  Future<PayPaymentResponse> checkPay(String transactionId) async {
+    return await _repository.checkPay(transactionId);
   }
 
   transactionValor(String value) => transactionModel.valor = value;

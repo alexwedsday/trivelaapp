@@ -16,6 +16,7 @@ class ShopList extends StatefulWidget {
 class _ShopListState extends State<ShopList> {
   CampeonatoController _controller;
   List<CampeonatoModel> campeonatos = [];
+  ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     _controller = CampeonatoController();
@@ -32,8 +33,10 @@ class _ShopListState extends State<ShopList> {
             child: Scaffold(
               body: Container(
                   child: ListView.builder(
+                      controller: _scrollController,
                       padding: EdgeInsets.all(32.0),
                       itemCount: campeonatos.length,
+                      scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         final CampeonatoModel campeonato =
                             index != null ? campeonatos[index] : {};
@@ -120,5 +123,10 @@ class _ShopListState extends State<ShopList> {
     Base64Decoder base64 = Base64Decoder();
     final Uint8List bytes = base64Decode(source);
     return bytes;
+  }
+
+  void pagination() {
+    if ((_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent)) {}
   }
 }

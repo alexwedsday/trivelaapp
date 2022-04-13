@@ -7,7 +7,7 @@ class ParticipanteModel {
   int campeonatosId;
   String createdAt;
   String updatedAt;
-  int pontosrodada;
+  dynamic pontosrodada;
   ProfileModel profile;
 
   ParticipanteModel(

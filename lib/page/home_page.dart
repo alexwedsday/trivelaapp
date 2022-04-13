@@ -394,7 +394,8 @@ class _HomePageState extends State<HomePage> {
             content: new Text('Deseja finalizar o Trivela ?'),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () =>
+                    Navigator.of(context, rootNavigator: true).pop(),
                 child: new Text('Não'),
               ),
               TextButton(

@@ -7,26 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:trivelaapp/controller/payment_controller.dart';
-import 'package:trivelaapp/model/picpay_model.dart';
+import 'package:trivelaapp/model/payme/payme_model.dart';
 import 'package:trivelaapp/page/home_page.dart';
-import 'package:trivelaapp/response/payment_response.dart';
+import 'package:trivelaapp/response/payme/pay_payment_response.dart';
 import 'package:trivelaapp/shared/trivela_assets.dart';
 
-class QrcodePage extends StatefulWidget {
-  PicpayModel picpayModel;
-
-  QrcodePage({Key key, this.picpayModel}) : super(key: key);
+class PayQrcodePage extends StatefulWidget {
+  PaymeModel paymeModel;
+  PayQrcodePage({Key key, this.paymeModel}) : super(key: key);
 
   @override
-  _QrcodePageState createState() => _QrcodePageState(picpayModel);
+  _PayQrcodePageState createState() => _PayQrcodePageState(paymeModel);
 }
 
-class _QrcodePageState extends State<QrcodePage> {
-  final PicpayModel valor;
+class _PayQrcodePageState extends State<PayQrcodePage> {
+  final PaymeModel valor;
   PaymentController _controller = PaymentController();
   String temporizador = "";
   Timer _timer;
-  _QrcodePageState(this.valor);
+  _PayQrcodePageState(this.valor);
 
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _QrcodePageState extends State<QrcodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white70,
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -55,10 +54,10 @@ class _QrcodePageState extends State<QrcodePage> {
                 child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.topCenter,
                       child: Image(
-                        width: 150,
-                        image: AssetImage(TrivelaAssets.picpay),
+                        width: 180,
+                        image: AssetImage(TrivelaAssets.pix),
                       ),
                     )),
               ),
@@ -80,7 +79,7 @@ class _QrcodePageState extends State<QrcodePage> {
             children: <Widget>[
               Center(
                   child: QrImage(
-                data: valor?.retorno?.qrcode?.content,
+                data: valor?.retorno?.response?.instructions?.qrCode?.plain,
                 version: QrVersions.auto,
                 size: 300,
                 errorCorrectionLevel: QrErrorCorrectLevel.H,
@@ -95,7 +94,8 @@ class _QrcodePageState extends State<QrcodePage> {
                 child: TextButton.icon(
                   icon: Icon(Icons.copy, color: Colors.black),
                   label: Text(
-                    valor.retorno.qrcode.content.substring(0, 30),
+                    valor?.retorno?.response?.instructions?.qrCode?.plain
+                        .substring(0, 30),
                     softWrap: true,
                     style: TextStyle(color: Colors.black),
                   ),
@@ -110,20 +110,13 @@ class _QrcodePageState extends State<QrcodePage> {
   }
 
   Uint8List decodeBase64(String source) {
-    String str = source;
-    if (source.isNotEmpty) str = removeHeader(source);
-
     Base64Decoder base64 = Base64Decoder();
-    final Uint8List bytes = base64Decode(str);
+    final Uint8List bytes = base64Decode(source);
     return bytes;
   }
 
-  String removeHeader(String source) {
-    return source.split(',')[1];
-  }
-
-  Future<PaymentResponse> check() async {
-    PaymentResponse response = await _controller.check(valor.transacao);
+  Future<PayPaymentResponse> check() async {
+    PayPaymentResponse response = await _controller.checkPay(valor?.transacao);
     if (response != null && response.error) {
       setState(() {
         temporizador = "Aguardando ...";
@@ -134,8 +127,8 @@ class _QrcodePageState extends State<QrcodePage> {
   }
 
   void _copy() async {
-    await Clipboard.setData(
-        ClipboardData(text: valor?.retorno?.qrcode?.content));
+    await Clipboard.setData(ClipboardData(
+        text: valor?.retorno?.response?.instructions?.qrCode?.plain));
   }
 
   _showDialog(String title, String message) {
@@ -156,5 +149,11 @@ class _QrcodePageState extends State<QrcodePage> {
             ],
           );
         });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 }

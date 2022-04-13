@@ -256,11 +256,10 @@ class _SigninPageState extends State<SigninPage> {
 
   String _isEmail(String value) {
     String str = '';
-    if (validator.isNull(value))
-      str = 'É necessário digitar um e-mail';
-    else if (validator.isEmail(value)) str = 'E-mail invalido';
 
-    return str;
+    if (!validator.isEmail(value)) str = 'E-mail invalido';
+
+    return str.isEmpty ? null : str;
   }
 
   String _isPwd(String value) {
@@ -268,9 +267,10 @@ class _SigninPageState extends State<SigninPage> {
 
     if (validator.isNull(value))
       str = 'É necessário digitar uma senha';
-    else if (validator.isLength(str, 6)) str = 'Senha mínimo de 6 caracteres';
+    else if (!validator.isLength(value, 6))
+      str = 'Senha mínimo de 6 caracteres';
 
-    return str;
+    return str.isEmpty ? null : str;
   }
 
   String _strValid(String value) {
@@ -278,10 +278,10 @@ class _SigninPageState extends State<SigninPage> {
 
     if (validator.isNull(value))
       str = 'É necessário digitar um nome';
-    else if (validator.isLength(str, 4))
+    else if (!validator.isLength(value, 4))
       str = 'Nome tem que ter mais de 4 caracteres';
 
-    return str;
+    return str.isEmpty ? null : str;
   }
 
   _doRegister(BuildContext context) async {

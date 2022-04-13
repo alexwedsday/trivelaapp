@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:trivelaapp/controller/payment_controller.dart';
-import 'package:trivelaapp/page/qrcode_page.dart';
-import 'package:trivelaapp/response/payment_response.dart';
+import 'package:trivelaapp/page/pay_qrcode_page.dart';
+import 'package:trivelaapp/page/pic_qrcode_page.dart';
+import 'package:trivelaapp/response/payme/pay_payment_response.dart';
+import 'package:trivelaapp/response/picpay/pic_payment_response.dart';
 import 'package:trivelaapp/shared/moeda_formatter.dart';
 import 'package:trivelaapp/shared/trivela_assets.dart';
 import 'package:validators/validators.dart' as validator;
@@ -194,7 +196,7 @@ class _DepositPageState extends State<DepositPage> {
       _isLoadingPic = true;
     });
 
-    PaymentResponse response = await _controller.picpay();
+    PicPaymentResponse response = await _controller.picpay();
 
     if (response != null && response.error) {
       _showDialog('Atenção', response.message);
@@ -202,7 +204,7 @@ class _DepositPageState extends State<DepositPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => QrcodePage(
+              builder: (context) => PicQrcodePage(
                     picpayModel: response?.item,
                   )));
     }
@@ -217,7 +219,7 @@ class _DepositPageState extends State<DepositPage> {
       _isDisablePic = true;
       _isLoadingPix = true;
     });
-    PaymentResponse response = await _controller.payme();
+    PayPaymentResponse response = await _controller.payme();
 
     if (response != null && response.error) {
       _showDialog('Ops!', response.message);
@@ -225,8 +227,8 @@ class _DepositPageState extends State<DepositPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => QrcodePage(
-                    picpayModel: response?.item,
+              builder: (context) => PayQrcodePage(
+                    paymeModel: response?.item,
                   )));
     }
 

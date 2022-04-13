@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:trivelaapp/model/picpay_transaction.dart';
+import 'package:trivelaapp/model/picpay/picpay_transaction.dart';
 
 class PicpayModel {
   String transacao;

@@ -1,4 +1,4 @@
-import 'package:trivelaapp/model/qrcode_model.dart';
+import 'package:trivelaapp/model/picpay/qrcode_model.dart';
 
 class PicpayTransaction {
   String referenceId;

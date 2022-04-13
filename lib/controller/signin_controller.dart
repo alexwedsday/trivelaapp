@@ -13,7 +13,7 @@ class SigninController {
   Future<SigninResponse> doRegister() async {
     var signinResponse;
 
-    if (!formKey.currentState.validate()) {
+    if (formKey.currentState.validate()) {
       formKey.currentState.save();
 
       try {

@@ -1,16 +1,16 @@
-import 'package:trivelaapp/model/picpay_model.dart';
+import 'package:trivelaapp/model/payme/payme_model.dart';
 
-class PaymentResponse {
+class PayPaymentResponse {
   bool error;
   String message;
-  PicpayModel item;
+  PaymeModel item;
 
-  PaymentResponse({this.error, this.message, this.item});
+  PayPaymentResponse({this.error, this.message, this.item});
 
-  PaymentResponse.fromJson(Map<String, dynamic> json) {
+  PayPaymentResponse.fromJson(Map<String, dynamic> json) {
     error = json['error'];
     message = json['message'];
-    item = json['item'] != null ? PicpayModel.fromJson(json['item']) : null;
+    item = json['item'] != null ? PaymeModel.fromJson(json['item']) : null;
   }
 
   Map<String, dynamic> toJson() {
