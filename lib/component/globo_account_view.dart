@@ -87,4 +87,9 @@ class _GloboAccountViewState extends State<GloboAccountView> {
               .showSnackBar(SnackBar(content: Text(message.message)));
         });
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

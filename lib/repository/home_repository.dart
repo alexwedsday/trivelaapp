@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trivelaapp/response/saldo_response.dart';
+import 'package:trivelaapp/shared/storage_service.dart';
 
 class HomeRepository {
   Map<String, String> _headers;
@@ -53,5 +54,11 @@ class HomeRepository {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token');
     return token;
+  }
+
+  Future<String> getImage() async {
+    String json = await StorageService.get('userData');
+    Map<String, dynamic> user = jsonDecode(json);
+    return user['image'];
   }
 }

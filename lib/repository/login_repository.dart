@@ -12,6 +12,7 @@ class LoginRepository {
   final String _PATH = '/api/auth/login';
 
   Future<ResponseModel> login(UserModel user) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     ResponseModel responseModel;
     try {
       String body = jsonEncode(user.toJsonLogin());
@@ -21,6 +22,7 @@ class LoginRepository {
 
       if (response.statusCode == 200) {
         responseModel = ResponseModel.fromJson(jsonDecode(response.body));
+        preferences.setString('userData', jsonEncode(responseModel.userData));
       }
     } catch (e) {
       print(e);

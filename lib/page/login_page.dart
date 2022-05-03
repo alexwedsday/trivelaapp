@@ -252,12 +252,9 @@ class _LoginPageState extends State<LoginPage> {
             actions: <Widget>[
               TextButton(
                   onPressed: () {
-                    title == 'Ops!'
-                        ? Navigator.pop(context)
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                   child: const Text('Fechar'))
             ],

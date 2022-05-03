@@ -16,4 +16,12 @@ class ResponseModel {
     final String token_type = json['tokenType'];
     return ResponseModel(error, accessToken, message, userData, token_type);
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = Map<String, dynamic>();
+    json['error'] = error;
+    json['accessToken'] = accessToken;
+    json['userData'] = userData;
+    return json;
+  }
 }

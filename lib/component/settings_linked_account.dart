@@ -104,7 +104,14 @@ class _SettingsLinkedAccountState extends State<SettingsLinkedAccount> {
 
             final ProfileResponse profileResponse =
                 await profileRepository.doPostBody(token, profileModel);
-            List<ProfileModel> lista = profileResponse.lista;
+
+            if (profileResponse != null && !profileResponse.error) {
+              List<ProfileModel> lista = profileResponse.lista;
+            } else {
+              final String message = profileResponse.message;
+              print('Linked Account: ${message}');
+              _showDialog('Ops!', message);
+            }
           }
         }
       }
@@ -130,6 +137,10 @@ class _SettingsLinkedAccountState extends State<SettingsLinkedAccount> {
         setState(() {
           this.times = convertToTimeModel(lista);
         });
+      } else {
+        final String message = profileResponse.message;
+        print('Linked Account: ${message}');
+        _showDialog('Ops!', message);
       }
     }
   }
@@ -147,5 +158,23 @@ class _SettingsLinkedAccountState extends State<SettingsLinkedAccount> {
     });
 
     return times;
+  }
+
+  _showDialog(String title, String message) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: const Text('Fechar'))
+            ],
+          );
+        });
   }
 }

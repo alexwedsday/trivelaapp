@@ -1,9 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:trivelaapp/component/campeonato_list_item.dart';
 import 'package:trivelaapp/controller/campeonato_controller.dart';
 import 'package:trivelaapp/model/campeonato_model.dart';
 import 'package:trivelaapp/response/campeonato_response.dart';
@@ -16,11 +15,14 @@ class ShopList extends StatefulWidget {
 class _ShopListState extends State<ShopList> {
   CampeonatoController _controller;
   List<CampeonatoModel> campeonatos = [];
-  ScrollController _scrollController = ScrollController();
+  PagingController<int, CampeonatoModel> _pagingController =
+      PagingController<int, CampeonatoModel>(firstPageKey: 1);
   @override
   void initState() {
     _controller = CampeonatoController();
-    _populate();
+    _pagingController.addPageRequestListener((pageKey) {
+      _pagination(pageKey);
+    });
     super.initState();
   }
 
@@ -32,77 +34,18 @@ class _ShopListState extends State<ShopList> {
           child: Container(
             child: Scaffold(
               body: Container(
-                  child: ListView.builder(
-                      controller: _scrollController,
-                      padding: EdgeInsets.all(32.0),
-                      itemCount: campeonatos.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final CampeonatoModel campeonato =
-                            index != null ? campeonatos[index] : {};
-
-                        return Card(
-                            margin: EdgeInsets.all(16),
-                            elevation: 4,
-                            child: Column(children: <Widget>[
-                              campeonato == null
-                                  ? ListTile(
-                                      leading: Icon(Icons.refresh_outlined),
-                                      title: Text('Clique para recarregar'),
-                                      onTap: () => {_populate()},
-                                    )
-                                  : campeonato != null
-                                      ? Image.memory(
-                                          decodeBase64(campeonato?.imagem),
-                                          width: 150,
-                                          height: 150,
-                                        )
-                                      : Icon(Icons.add_photo_alternate),
-                              ListTile(
-                                title: Text(campeonato?.nome),
-                              ),
-                              ListTile(
-                                title: Text('CUSTO PARA PARTICIPAR'),
-                                subtitle: Text('R\$ ${campeonato?.valor}',
-                                    style: TextStyle(
-                                      background: Paint()..color = Colors.grey,
-                                      color: Colors.greenAccent,
-                                    )),
-                              ),
-                              ListTile(
-                                title: Text('COM CAPITAO'),
-                                subtitle: Text('${campeonato?.capitao}',
-                                    style: TextStyle(
-                                      background: Paint()..color = Colors.grey,
-                                      color: Colors.red,
-                                    )),
-                              ),
-                              ListTile(
-                                title: Text('ARRECADAÇÕES'),
-                                subtitle: Text(
-                                    ' Pagantes \n ${campeonato?.participantes?.length}',
-                                    style: TextStyle(
-                                      background: Paint()..color = Colors.grey,
-                                      color: Colors.black,
-                                    )),
-                              ),
-                              ListTile(
-                                subtitle: Text('Premiação Parcial',
-                                    style: TextStyle(
-                                      background: Paint()..color = Colors.grey,
-                                      color: Colors.black,
-                                    )),
-                              ),
-                              ButtonBar(
-                                alignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                      onPressed: () => {},
-                                      child: Text('Participar'))
-                                ],
-                              )
-                            ]));
-                      })),
+                  child: RefreshIndicator(
+                onRefresh: () => Future.sync(() => _pagingController.refresh()),
+                child: PagedListView.separated(
+                    pagingController: _pagingController,
+                    padding: EdgeInsets.all(16),
+                    builderDelegate: PagedChildBuilderDelegate<CampeonatoModel>(
+                        itemBuilder: (context, campeonato, index) =>
+                            CampeonatoListItem(campeonato: campeonato)),
+                    separatorBuilder: (context, index) => SizedBox(
+                          height: 16.0,
+                        )),
+              )),
             ),
           ),
         ),
@@ -110,7 +53,7 @@ class _ShopListState extends State<ShopList> {
     );
   }
 
-  void _populate() async {
+  Future<void> _populate() async {
     CampeonatoResponse response = await _controller.getCampeonatos();
     if (response != null && !response.error) {
       setState(() {
@@ -119,14 +62,31 @@ class _ShopListState extends State<ShopList> {
     }
   }
 
-  Uint8List decodeBase64(String source) {
-    Base64Decoder base64 = Base64Decoder();
-    final Uint8List bytes = base64Decode(source);
-    return bytes;
+  Future<void> _pagination(int pageKey) async {
+    final previousFetchedItemCount = _pagingController.itemList?.length ?? 0;
+    try {
+      final List<CampeonatoModel> campeonatoList =
+          await _controller.pagination(pageKey, 2);
+      final List<CampeonatoModel> lastElement = <CampeonatoModel>[];
+      if (campeonatoList.isNotEmpty) {
+        lastElement.add(campeonatoList.last);
+      }
+
+      final isLastPage = campeonatoList.length < 2;
+      if (isLastPage) {
+        _pagingController.appendLastPage(lastElement);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(campeonatoList, nextPageKey);
+      }
+    } catch (e) {
+      _pagingController.error = e;
+    }
   }
 
-  void pagination() {
-    if ((_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent)) {}
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }

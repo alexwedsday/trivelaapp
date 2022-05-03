@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trivelaapp/model/campeonato_model.dart';
 import 'package:trivelaapp/response/campeonato_response.dart';
 
 class CampeonatoRepository {
@@ -27,6 +29,24 @@ class CampeonatoRepository {
       print(e);
     }
     return campeonatoResponse;
+  }
+
+  Future<List<CampeonatoModel>> pagination(int pageKey, int pageSize) async {
+    CampeonatoResponse response = await getCampeonatos();
+    List<CampeonatoModel> campeonatos = <CampeonatoModel>[];
+    if (response != null && !response.error) {
+      campeonatos = response.lista;
+      if (campeonatos.isNotEmpty) {
+        int length = campeonatos.length;
+        final int start = (pageKey - 1) * pageSize;
+        final isValidPage = length < start;
+        if (!isValidPage) {
+          final int end = min(start + pageSize, length);
+          return campeonatos.sublist(start, end);
+        }
+      }
+    }
+    return <CampeonatoModel>[];
   }
 
   Future<String> getToken() async {

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +11,7 @@ import 'package:trivelaapp/controller/home_page_controller.dart';
 import 'package:trivelaapp/page/deposit_page.dart';
 import 'package:trivelaapp/page/login_page.dart';
 import 'package:trivelaapp/page/settings_page.dart';
+import 'package:trivelaapp/repository/home_repository.dart';
 import 'package:trivelaapp/response/saldo_response.dart';
 import 'package:trivelaapp/shared/trivela_assets.dart';
 
@@ -29,13 +33,14 @@ class _HomePageState extends State<HomePage> {
   String _balance;
   String _balanceBonus;
   String _balanceReal;
+  String image;
 
   int selected;
 
   @override
   void initState() {
     super.initState();
-    _controller = HomePageController();
+    _controller = HomePageController(HomeRepository());
     setState(() {
       _balance = '0,00';
       _balanceReal = '0,00';
@@ -43,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       selected = widget.index;
     });
     _saldo();
+    getImage();
   }
 
   @override
@@ -58,21 +64,17 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               actions: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    _selectComponent(1, context);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              index: 1,
-                            )));
-                  },
-                ),
-                IconButton(
                   icon: Icon(Icons.notifications_none),
                   onPressed: () {},
                 ),
                 PopupMenuButton(
-                  icon: Icon(Icons.account_circle, color: Colors.orangeAccent),
+                  icon: image == null
+                      ? Icon(Icons.account_circle, color: Colors.orangeAccent)
+                      : CircleAvatar(
+                          child: ClipOval(
+                            child: Image.memory(decodeBase64(image)),
+                          ),
+                        ),
                   itemBuilder: (context) => [
                     PopupMenuItem<int>(
                       value: 0,
@@ -406,5 +408,19 @@ class _HomePageState extends State<HomePage> {
           ),
         )) ??
         false;
+  }
+
+  Uint8List decodeBase64(String source) {
+    Base64Decoder base64 = Base64Decoder();
+    final Uint8List bytes = base64Decode(source);
+    return bytes;
+  }
+
+  void getImage() async {
+    var retorno = await _controller.getImage();
+
+    setState(() {
+      image = retorno;
+    });
   }
 }
